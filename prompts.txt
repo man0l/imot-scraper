@@ -1,0 +1,261 @@
+HTML:
+
+<input type="hidden" name="act" value="5">
+<input type="hidden" name="rub" value="1">
+<input type="hidden" name="adv" value="1b168303716366163">
+<input type="hidden" name="actions" value="">
+<input type="hidden" name="topmenu" value="2">
+<input type="hidden" name="details" value="1">
+<input type="hidden" name="fe0" value="0">
+<input type="hidden" name="fe1" value="">
+<input type="hidden" name="fe2" value="0">
+<input type="hidden" name="fe3" value="">
+<input type="hidden" name="fe4" value="">
+<input type="hidden" name="fe7" value="0">
+<input type="hidden" name="fe9" value="0">
+<div style="margin-top:17px;">
+<table width="660" border="0" cellspacing="0" cellpadding="0">
+<tbody><tr>
+<td width="500" valign="top">
+<div style="font-size: 18px; font-weight: bold; padding-bottom: 2px;"><h1 style="margin: 0; font-size:18px;">Продава 2-СТАЕН</h1></div>
+<div style="font-size: 14px;">област Бургас, гр. Несебър</div>
+</td>
+<td align="right" valign="top">
+<div style="font-size:16px; margin-top: 3px;">
+<strong style="color: #900">60 999 EUR</strong>
+</div>
+<div style="color:#666; margin-top: 3px;">(1051.71 EUR/m<sup>2</sup>)</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<table class="newAdImages" style="margin-top:10px; margin-bottom:10px;">
+<tbody><tr>
+<td class="img TOP">
+<div class="ico"></div>
+<div class="imgHolder">
+<a class="zoom" onclick="openBigGallery()">Увеличи</a>
+<div class="nums">
+<a class="prevDetailsSmall" onclick="SlideAndChoose('pictures_moving_details_small','left',true)"></a>
+<span id="currentPicture">1</span>/11
+<a class="nextDetailsSmall" onclick="SlideAndChoose('pictures_moving_details_small','right',true)"></a>
+</div>
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/big1/1b168303716366163_23.jpg" class="big paid" id="bigPictureCarousel" onclick="openBigGallery();" style="cursor:pointer">
+</div>
+<div class="smallHolder paid">
+<div class="im" id="pictures_moving_details_small" data-position-left="0" data-element-width="111" data-visible-elements="6" data-elements="11">
+<a onclick="ChooseBigPicture(0+1)" style="opacity:0.7" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_23.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_23.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(1+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_YW.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_YW.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(2+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_ca.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_ca.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(3+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_31.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_31.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(4+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/16
+
+Suggest real estate property attributes to extract and their corresponding XPath:
+
+HTML:
+3//big1/1b168303716366163_6A.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_6A.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(5+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_np.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_np.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(6+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_Ca.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_Ca.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(7+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_XP.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_XP.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(8+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_G7.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_G7.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(9+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_9Z.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_9Z.jpg" alt="Продава 2-СТАЕН">
+</a><a onclick="ChooseBigPicture(10+1)" data-link="//cdn3.focus.bg/imot/photosimotbg/1/163//big1/1b168303716366163_QT.jpg">
+<img src="//cdn3.focus.bg/imot/photosimotbg/1/163/1b168303716366163_QT.jpg" alt="Продава 2-СТАЕН">
+</a>
+</div>
+</div>
+</td>
+</tr>
+</tbody></table>
+<div class="advHeader">
+<div class="title">Продава 2-СТАЕН</div>
+<div class="info">
+<div class="location">област Бургас, гр. Несебър</div>
+<div class="locLink"><a href="#map">Виж карта</a></div>
+<div class="btns">
+<a href="javascript:;" class="print" title="Принтирай обявата" onclick="javascript: var win=window.open('/pcgi/printdet.cgi?id=1b168303716366163', '_blank'); win.focus(); return false;"></a>
+<a href="javascript:;" class="share" title="Сподели обявата" onclick="javascript:ShowSendFriend(); return false;"></a>
+<a href="javascript:;" class="copy" title="Копирай линка" id="copyLink" onclick="javascript:copyLink('https://www.imot.bg/pcgi/imot.cgi?act=5&amp;adv=1b168303716366163'); return false;"></a>
+<a href="javascript:;" id="star1_1b168303716366163" onclick="javascript:openLogPopup(1); return false;" class="obiavaFav" style="margin-left:0px;background-position: right 0px;" title="Запази обявата"></a>
+</div>
+</div>
+</div>
+<div id="send_friend" class="regWindow" style="display: none; padding-top:10px;">
+<div class="panel">
+<div class="formVhod" id="formVhod" style="border-radius:10px;">
+<a class="close" title="Затвори" href="javascript:HideSendFriend(0);"></a>
+<iframe src="/pcgi/sendfriend.cgi?id=1b168303716366163&amp;f0=%CF%F0%EE%E4%E0%E2%E0%202-%D1%D2%C0%C5%CD,%20%EE%E1%EB%E0%F1%F2%20%C1%F3%F0%E3%E0%F1,%20%E3%F0.%20%CD%E5%F1%E5%E1%FA%F0,%2060999%20EUR" name="login" width="600" height="700" marginwidth="0" marginheight="0" frameborder="0" scrolling="no">&
+
+Suggest real estate property attributes to extract and their corresponding XPath:
+
+HTML:
+nbsp;</iframe>
+</div>
+</div>
+</div>
+<div class="adPrice">
+<div class="price">
+<div id="cena">60 999 EUR</div><span id="cenakv">(1052 EUR/m<sup>2</sup>)</span><span><a href="javascript:;" onclick="javascript:subscribelist('1b168303716366163','','60999','EUR') ; return false;" title="Виж промените в цената."><img src="../images/picturess/icons/price-stat.svg"></a></span>
+</div>
+<div class="info">
+<div>Коригирана в 14:08 на 18 юни, 2023 год.</div>
+Обявата е посетена <span style="font-weight:bold;">1199</span> пъти.
+</div>
+</div>
+<div class="regWindow" id="price_stats" style="display:none;"></div>
+<div style="margin-top:15px;"><iframe src="https://imotbg.creditcenter.bg/small-calculator.php?type=2&amp;city=%EE%E1%EB%E0%F1%F2%20%C1%F3%F0%E3%E0%F1&amp;price=60999&amp;construction=1" name="baner" width="640" height="37" marginwidth="0" marginheight="0" frameborder="0" scrolling="no">&nbsp;</iframe></div>
+<div class="adParams">
+<div>Площ: <strong>58 m<sup>2</sup></strong></div>
+<div>Етаж: <strong>3-ти от 6</strong></div><div>Строителство: <strong>Тухла</strong></div>
+</div>
+<a name="mynotes"></a>
+<div class="galleryTabs adTabs">
+<a href="javascript:openLogPopup(1);" id="TT1" class="note">Напиши Бележка</a>
+<a href="javascript:openLogPopup(1);" id="TT2" class="vote">Дай оценка</a>
+<a href="javascript:showAdTab(3);" id="TT3" class="alert">Съобщи за нередност</a>
+</div>
+<div class="myNote" id="TC1" style="display:none;">
+<div id="noteView" style="display:none;">
+<div class="note" id="noteView_txt"></div>
+<div class="buttons">
+<span>16:21 ч., 18.06.2023</span>
+<a href="javascript:;" onclick="javascript:deleteNote('1b168303716366163','2');">Изтрий</a>
+<a href="javascript:;" onclick="javascript:showWriteView();">Редактирай</a>
+</div>
+</div>
+<div id="noteWrite" style="display:block;">
+<textarea rows="7" id="noteWrite_txt" class="noteTA" placeholder="Бележката е лична и видима само от Вас."></textarea>
+<div class="buttons">
+<a href="javascript:;" onclick="javascript:CancelNote();">Отказ</a>
+<a href="javascript:;" onclick="javascript:SaveNote('1b168303716366163','','2');"><strong>Запиши</strong></a>
+</div>
+</div>
+</div>
+ <div class="myNote" id="TC2" style="display:none;">
+<div class="vote">
+Оценка:
+от 10
+</div>
+<div class="buttons"><span>16:21 ч., 18.06.2023</span> <br>&nbsp;</div>
+</div>
+<div class="myNote" id="TC3" style="display:none;">
+<table width="640" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0;">
+<tbody><tr><td><input type="text" name="s9" value="" class="noteNAME" style="" placeholder="Вашето име" maxlength="55"></td></tr>
+<tr><td><textarea name="s10" rows="7" class="noteTA" style="" placeholder="Вашето съобщение" maxlength="1700"></textarea></td></tr>
+<tr><td><input type="text" name="s11" value="" class="noteNAME" style="" placeholder="Мобилен телефон" maxlength="15"> <span style="padding-top:5px; padding-bottom:5px; font-size:11px; font-style:italic;">(Ще получите SMS с ключ за верификация)</span></td></tr>
+<tr><td style="
+
+Suggest real estate property attributes to extract and their corresponding XPath:
+
+HTML:
+font-size:11px;">
+<input type="checkbox" name="s13" value="1"> Съгласявам се с <a href="//www.imot.bg/pcgi/imot.cgi?act=16&amp;mode=3" target="_blank" style="color:#000;">общите условия</a> и
+<a href="//www.imot.bg/pcgi/imot.cgi?act=16&amp;mode=6" style="color:#000;" target="_blank">политики за защита на личните данни</a>
+</td></tr>
+<tr>
+<td width="70" align="right" style="padding-top:5px;"><div class="buttons"><a href="javascript:;" onclick="javascript:document.search.action+='#mynotes';document.search.s8.value='0';document.search.s14.value='2';document.search.submit();">Изпрати</a></div></td>
+</tr>
+</tbody></table>
+<input type="hidden" name="s14" value="">
+</div>
+<div class="clear"></div>
+<div style="width:660px; font-size:14px; font-weight:bold; padding-bottom:5px; margin-bottom:10px; border-bottom:#CCC 1px solid; margin-top:10px;">Особености:</div>
+<table width="660" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr>
+<td valign="top" width="20%"><div style="margin-bottom:5px;">• Тухла</div>
+</td>
+<td valign="top" width="20%"><div style="margin-bottom:5px;">• Асансьор</div>
+</td>
+<td valign="top" width="20%"><div style="margin-bottom:5px;">• Обзаведен</div>
+</td>
+<td valign="top" width="20%"><div style="margin-bottom:5px;">• Саниран</div>
+</td>
+<td valign="top" width="20%"><div style="margin-bottom:5px;">• В затворен комплекс</div>
+</td>
+</tr>
+</tbody></table>
+<div style="width:660px; height:40px; font-size:14px; margin-bottom:10px; border-bottom:#CCC 1px solid;">
+<span style="float:left;">
+<strong style="display:inline-block; width:123px;">За контакти:</strong>
+<img src="../images/picturess/phone-ico.gif" width="25" height="25" style="vertical-align:middle; display:inline-block;">&nbsp;<span style="font-size:22px; font-weight:bold; display:inline-block; vertical-align:-4px;">0888556665</span>
+</span>
+</div>
+<table width="660" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px; border-bottom:#999999 1px dotted;">
+<tbody><tr>
+<td width="160" valign="top" style="padding-bottom:10px;">
+&nbsp;
+</td>
+<td width="500" valign="top" style="padding-bottom:10px;">
+<div style="float:left; margin-right:20px">
+<b></b>
+</div>
+</td>
+</tr>
+</tbody></table>
+<table width="660" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;" id="send_email_ask">
+<tbody><tr>
+<td width="660" style="font-size:14px; font-weight:bold;">Изпрати запитване:</td>
+</tr>
+</tbody></table>
+<table width="660" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+<tbody><tr>
+<td width="160" valign="top" style="padding-bottom:5px;">
+<input type="hidden" name="s5" value=""><input type="hidden" name="s6" value=""><input type="hidden" name="s7" value="">
+&nbsp;
+</td>
+<td width="500" style="padding-bottom:5px; vertical-align:top; text-align:right;">
+<div style="text-align:left;">
+<table width="500" cellspacing="0" cellpadding="0" border="0">
+<tbody><tr><td width="500" colspan="3" style="padding-left:10px; font-size:12px;">Вашето съобщение:</td><
+
+Suggest real estate property attributes to extract and their corresponding XPath:
+
+HTML:
+/tr>
+<tr><td width="500" colspan="3" style="padding-top:5px; padding-left:10px;"><textarea cols="36" name="s2" rows="3" wrap="virtual" maxlength="500" class="swe500"></textarea></td></tr>
+<tr>
+<td width="255" style="padding-top:5px; padding-left:10px; font-size:12px;">Вашето име:</td>
+<td width="10"><img src="../images/picturess/no.gif" width="10" height="1" border="0"></td>
+<td width="235" style="padding-top:5px; font-size:12px;">Вашия мобилен телефон:</td>
+</tr>
+<tr>
+<td width="255" style="padding-top:5px; padding-left:10px; height:30px; vertical-align:top;"><input type="text" name="s0" value="" class="swe255" size="14" maxlength="25"></td>
+<td width="10"><img src="../images/picturess/no.gif" width="10" height="1" border="0"></td>
+<td width="235" style="padding-top:5px; height:30px; vertical-align:top;">
+<input type="text" name="s1" value="" class="swe235" size="14" maxlength="25"><br>
+</td>
+</tr>
+<tr>
+<td width="255" style="padding-top:5px; padding-left:10px; font-size:12px;">Вашия E-mail:</td>
+<td width="10"><img src="../images/picturess/no.gif" width="10" height="1" border="0"></td>
+<td width="235" style="padding-top:5px; font-size:12px;">&nbsp;</td>
+</tr>
+<tr>
+<td width="255" style="padding-top:5px; padding-bottom:10px; padding-left:10px;"><input type="text" name="s3" value="" class="swe235" size="14" maxlength="40"></td>
+<td width="10"><img src="../images/picturess/no.gif" width="10" height="1" border="0"></td>
+<td width="235" align="right" style="padding-top:5px; padding-bottom:10px;">
+<a href="javascript:document.search.action+='#send_email_ask';document.search.s8.value='2';document.search.s14.value='0';document.search.submit();" class="btnSendMessage"><img src="../images/picturess/mail2.gif" width="20" height="14" style="vertical-align:-2px; margin-right:5px;">Изпрати Е-mail</a>
+</td>
+</tr>
+<tr><td colspan="3" style="text-align:right; font-size:12px;">
+Съгласявам се с <a href="//www.imot.bg/pcgi/imot.cgi?act=16&amp;mode=3" style="color:#09F" target="_blank">общите условия</a> и <a href="//www.imot.bg/pcgi/imot.cgi?act=16&amp;mode=6" style="color:#09F" target="_blank">политики за защита на личните данни</a><input type="checkbox" name="s4" value="1">
+</td></tr>
+</tbody></table>
+<input type="hidden" name="s8" value="2">
+</div></td>
+</tr>
+</tbody></table>
+<div style="width:660px; height:1px; margin-top:10px; border-bottom:#999999 1px solid;"></div>
+ 
+
+Suggest real estate property attributes to extract and their corresponding XPath:
