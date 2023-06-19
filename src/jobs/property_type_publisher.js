@@ -1,7 +1,5 @@
-const amqp = require('amqplib');
-const config = require('../config');
 const AMQPWrapper = require('../libs/amqp_wrapper');
-
+const config = require('../config/config');
 const propertyTypes = {
   '1-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=1&f4=&f5=',
   '2-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=2&f4=&f5=',
@@ -16,7 +14,8 @@ const propertyTypes = {
 
 async function main() {
     try {
-        const connection = await AMQPWrapper.connect();
+        let amqp = new AMQPWrapper(config);
+        const connection = await amqp.connect();
         const channel = await connection.createChannel();
 
         const queue = 'propertyUrlsQueue';

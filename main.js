@@ -2,10 +2,12 @@ const puppeteer = require('puppeteer');
 const AMQPWrapper = require('./src/libs/amqp_wrapper');
 const ImotBGScraper = require('./src/libs/imotbg_scraper');
 const FileManager = require('./src/libs/file_manager');
+const config = require('./config/config');
 
 async function main() {
     try {
-        const connection = await AMQPWrapper.connect();
+        let amqp = new AMQPWrapper(config);
+        const connection = await amqp.connect();
         const channel = await connection.createChannel();
 
         const queue = 'propertyUrlsQueue';
