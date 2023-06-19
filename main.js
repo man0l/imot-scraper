@@ -5,6 +5,7 @@ const FileManager = require('./src/libs/file_manager');
 const config = require('./src/config/config');
 
 async function main() {
+    console.log(config);
     try {
         let amqp = new AMQPWrapper(config);
         const connection = await amqp.connect();

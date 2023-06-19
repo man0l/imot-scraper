@@ -1,3 +1,5 @@
+const dotenv = require("dotenv");
+dotenv.config();
 module.exports = {
   rabbitmq: {
     host: process.env.RABBITMQ_HOST,
