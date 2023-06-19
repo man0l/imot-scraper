@@ -12,6 +12,7 @@ services:
       - .:/app
     depends_on:
       - rabbitmq
+    restart: always
   web_scraper_consumer:
     build: .
     command: node main.js
@@ -19,3 +20,4 @@ services:
       - .:/app
     depends_on:
       - rabbitmq
+    restart: always

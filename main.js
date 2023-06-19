@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const AMQPWrapper = require('./src/libs/amqp_wrapper');
 const ImotBGScraper = require('./src/libs/imotbg_scraper');
 const FileManager = require('./src/libs/file_manager');
-const config = require('./config/config');
+const config = require('./src/config/config');
 
 async function main() {
     try {

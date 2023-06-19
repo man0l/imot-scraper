@@ -1,4 +1,4 @@
-const Scraper = require('../scraper');
+const Scraper = require('./scraper');
 
 class ImotBGScraper extends Scraper {
     constructor(browser, page) {
