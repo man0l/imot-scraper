@@ -22,7 +22,7 @@ async function main() {
         }
 
         setTimeout(() => {
-            connection.close();
+            amqp.close();
             process.exit(0);
         }, 500);
     } catch (error) {
