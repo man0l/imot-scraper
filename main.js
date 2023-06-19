@@ -5,33 +5,31 @@ const FileManager = require('./src/libs/file_manager');
 const config = require('./src/config/config');
 
 async function main() {
-    console.log(config);
+    
     try {
         let amqp = new AMQPWrapper(config);
-        const connection = await amqp.connect();
-        const channel = await connection.createChannel();
-
-        const queue = 'propertyUrlsQueue';
-        await channel.assertQueue(queue, { durable: true });
-
+        await amqp.connect();
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         const scraper = new ImotBGScraper(browser, page);
 
         console.log('Waiting for property URLs...');
 
-        channel.consume(queue, async (msg) => {
+        amqp.consume(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_TYPES, async (msg) => {
             if (msg !== null) {
-                const propertyUrl = msg.content.toString();
-                const propertyDetails = await scraper.scrapePropertyDetails(propertyUrl, scraper.detailsXPaths);
+                const url = msg.content.toString();
+                const propertyLinks = await scraper.scrapePropertyLinks(url);
 
-                if (propertyDetails) {
-                    FileManager.appendToFile('propertyDetails.txt', propertyDetails);
+                if (propertyLinks) {
+                    propertyLinks.forEach(async (propertyLink) => {
+                        await amqp.sendToQueue(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_LISTINGS, propertyLink);
+                    });
                 }
 
-                channel.ack(msg);
+                amqp.channel.ack(msg);
             }
         }, { noAck: false });
+        
 
     } catch (error) {
         console.error('Error in main:', error);

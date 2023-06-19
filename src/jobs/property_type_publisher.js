@@ -15,14 +15,9 @@ const propertyTypes = {
 async function main() {
     try {
         let amqp = new AMQPWrapper(config);
-        const connection = await amqp.connect();
-        const channel = await connection.createChannel();
-
-        const queue = 'propertyUrlsQueue';
-        await channel.assertQueue(queue, { durable: true });
-
+        await amqp.connect();
         for (const propertyType in propertyTypes) {
-            channel.sendToQueue(queue, Buffer.from(propertyTypes[propertyType]), { persistent: true });
+            amqp.sendToQueue(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_TYPES, propertyTypes[propertyType]);
             console.log(`Sent '${propertyTypes[propertyType]}'`);
         }
 
