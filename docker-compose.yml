@@ -7,7 +7,7 @@ services:
       - "15672:15672"
   web_scraper_publisher:
     build: .
-    command: node property_type_publisher.js
+    command: node src/jobs/property_type_publisher.js
     volumes:
       - .:/app
     depends_on:
