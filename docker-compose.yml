@@ -1,17 +1,21 @@
 version: '3'
 services:
-  app:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  web_scraper_publisher:
     build: .
+    command: node property_type_publisher.js
     volumes:
       - .:/app
     depends_on:
       - rabbitmq
-    env_file:
-      - .env
-    command: npm start
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - 15672:15672
-      - 5672:5672
+  web_scraper_consumer:
+    build: .
+    command: node main.js
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
