@@ -4,7 +4,7 @@ const AMQPWrapper = require('../src/libs/amqp_wrapper');
 const ImotBGScraper = require('../src/libs/imotbg_scraper');
 const FileManager = require('../src/libs/file_manager');
 const config = require('../src/config/config');
-const main = require('../../main');
+const main = require('../main');
 
 jest.mock('puppeteer');
 jest.mock('../src/libs/amqp_wrapper');

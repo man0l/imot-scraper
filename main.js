@@ -36,4 +36,4 @@ async function main() {
     }
 }
 
-export.main = main;
+exports.main = main;
