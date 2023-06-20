@@ -12,48 +12,74 @@ describe('ImotBGScraper', () => {
   beforeEach(() => {
     page = {
       goto: jest.fn(),
-      $eval: jest.fn(),
-      waitForNavigation: jest.fn(),
-      close: jest.fn(),
+      evaluate: jest.fn(),
     };
     browser = {
       newPage: jest.fn().mockResolvedValue(page),
-      close: jest.fn(),
     };
     puppeteer.launch.mockResolvedValue(browser);
     scraper = new ImotBGScraper(browser, page);
+    errorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('should navigate to the correct URL', async () => {
+  afterEach(() => {
+    errorMock.mockRestore();
+  });
+
+  it('should scrape property links correctly', async () => {
     const url = 'https://test.com';
-    await scraper.navigate(url);
+    const mockLinks = ['link1', 'link2'];
+    page.evaluate.mockResolvedValue(mockLinks);
+    const result = await scraper.scrapePropertyLinks(url);
     expect(page.goto).toHaveBeenCalledWith(url);
-    expect(page.waitForNavigation).toHaveBeenCalled();
+    expect(page.evaluate).toHaveBeenCalled();
+    expect(result).toEqual(mockLinks);
   });
 
-  it('should scrape data correctly', async () => {
+  it('should scrape property details correctly', async () => {
     const url = 'https://test.com';
-    const xpath = '//div[@class="data"]';
-    const data = 'Test Data';
-    page.$eval.mockResolvedValue(data);
-    const result = await scraper.scrapeData(url, xpath);
+    const mockDetails = { propertyType: 'testType', location: 'testLocation' };
+    page.evaluate.mockResolvedValue(mockDetails);
+    const result = await scraper.scrapePropertyDetails(url, scraper.detailsXPaths);
     expect(page.goto).toHaveBeenCalledWith(url);
-    expect(page.$eval).toHaveBeenCalledWith(xpath, expect.any(Function));
-    expect(result).toEqual(data);
+    expect(page.evaluate).toHaveBeenCalledWith(expect.any(Function), scraper.detailsXPaths);
+    expect(result).toEqual(mockDetails);
   });
 
-  it('should handle errors in navigation', async () => {
+  it('should return null when scrapePropertyLinks encounters an error', async () => {
     const url = 'https://test.com';
-    page.goto.mockRejectedValue(new Error('Test Error'));
-    await expect(scraper.navigate(url)).rejects.toThrow('Test Error');
+    page.evaluate.mockImplementation(() => {
+      throw new Error('Test error');
+    });
+    const result = await scraper.scrapePropertyLinks(url);
+    expect(result).toBeNull();
   });
 
-  it('should handle errors in scraping', async () => {
+  it('should return null when scrapePropertyDetails encounters an error', async () => {
     const url = 'https://test.com';
-    const xpath = '//div[@class="data"]';
-    page.$eval.mockRejectedValue(new Error('Test Error'));
-    await expect(scraper.scrapeData(url, xpath)).rejects.toThrow('Test Error');
+    page.evaluate.mockImplementation(() => {
+      throw new Error('Test error');
+    });
+    const result = await scraper.scrapePropertyDetails(url, scraper.detailsXPaths);
+    expect(result).toBeNull();
   });
 
-  // Add more tests...
+  it('should handle no property links found', async () => {
+    const url = 'https://test.com';
+    page.evaluate.mockResolvedValue([]);
+    const result = await scraper.scrapePropertyLinks(url);
+    expect(page.goto).toHaveBeenCalledWith(url);
+    expect(page.evaluate).toHaveBeenCalled();
+    expect(result).toEqual([]);
+  });
+
+  it('should handle no property details found', async () => {
+    const url = 'https://test.com';
+    page.evaluate.mockResolvedValue({});
+    const result = await scraper.scrapePropertyDetails(url, scraper.detailsXPaths);
+    expect(page.goto).toHaveBeenCalledWith(url);
+    expect(page.evaluate).toHaveBeenCalledWith(expect.any(Function), scraper.detailsXPaths);
+    expect(result).toEqual({});
+  });
+
 });

@@ -19,7 +19,7 @@ class AMQPWrapper {
     if (!this.channel) {
       await this.connect();
     }
-
+    await this.channel.assertQueue(queue, { durable: true })
     return this.channel.sendToQueue(queue, Buffer.from(message));
   }
 
@@ -27,7 +27,7 @@ class AMQPWrapper {
     if (!this.channel) {
       await this.connect();
     }
-
+    await this.channel.assertQueue(queue, { durable: true });
     return this.channel.consume(queue, callback);
   }
 

@@ -1,80 +1,93 @@
-// main.test.js
 const puppeteer = require('puppeteer');
 const AMQPWrapper = require('../src/libs/amqp_wrapper');
 const ImotBGScraper = require('../src/libs/imotbg_scraper');
-const FileManager = require('../src/libs/file_manager');
 const config = require('../src/config/config');
-const main = require('../main');
 
-jest.mock('puppeteer');
-jest.mock('../src/libs/amqp_wrapper');
-jest.mock('../src/libs/imotbg_scraper');
-jest.mock('../src/libs/file_manager');
+const {main} = require('../main');
 
-describe('main', () => {
-  let browser;
-  let page;
-  let amqp;
-  let connection;
-  let channel;
-  let scraper;
+// Mock dependencies
+jest.mock('puppeteer', () => ({
+  launch: jest.fn(),
+}));
+jest.mock('../src/libs/amqp_wrapper', () => jest.fn());
+jest.mock('../src/libs/imotbg_scraper', () => jest.fn());
+jest.mock('../src/config/config', () => ({
+  rabbitmq: {
+    host: 'mockHost',
+    port: 'mockPort',
+    user: 'mockUser',
+    password: 'mockPassword',
+    queue_property_types: 'mockQueue',
+    queue_property_listings: 'mockQueue',
+  }
+}));
 
+
+// Mock methods and properties
+puppeteer.launch.mockResolvedValue({
+  newPage: jest.fn().mockResolvedValue({}),
+});
+const mockConnect = jest.fn();
+const mockConsume = jest.fn();
+const mockSendToQueue = jest.fn();
+const mockAck = jest.fn();
+AMQPWrapper.mockImplementation(() => ({
+  connect: mockConnect,
+  consume: mockConsume,
+  sendToQueue: mockSendToQueue,
+  channel: {
+    ack: mockAck,
+  }
+}));
+ImotBGScraper.mockImplementation(() => ({
+  scrapePropertyLinks: jest.fn(),
+}));
+
+describe('main function', () => {
   beforeEach(() => {
-    page = {};
-    browser = { newPage: jest.fn().mockResolvedValue(page) };
-    puppeteer.launch.mockResolvedValue(browser);
-    channel = { assertQueue: jest.fn(), consume: jest.fn() };
-    connection = { createChannel: jest.fn().mockResolvedValue(channel) };
-    amqp = { connect: jest.fn().mockResolvedValue(connection) };
-    AMQPWrapper.mockImplementation(() => amqp);
-    scraper = { scrapePropertyDetails: jest.fn() };
-    ImotBGScraper.mockImplementation(() => scraper);
-    FileManager.appendToFile = jest.fn();
+    // Reset the mock call count before each test
+    mockConnect.mockClear();
+    mockConsume.mockClear();
+    mockSendToQueue.mockClear();
+    mockAck.mockClear();
   });
 
-  it('should establish AMQP connection and channel', async () => {
+  test('should connect to AMQP', async () => {
     await main();
-    expect(AMQPWrapper).toHaveBeenCalledWith(config);
-    expect(amqp.connect).toHaveBeenCalled();
-    expect(connection.createChannel).toHaveBeenCalled();
+    expect(mockConnect).toHaveBeenCalled();
   });
 
-  it('should launch puppeteer browser and create a new page', async () => {
+  test('should consume from queue', async () => {
     await main();
-    expect(puppeteer.launch).toHaveBeenCalled();
-    expect(browser.newPage).toHaveBeenCalled();
+    expect(mockConsume).toHaveBeenCalledWith(config.rabbitmq.queue_property_types, expect.any(Function), { noAck: false });
   });
 
-  it('should consume messages from the queue and process them', async () => {
-    const msg = { content: Buffer.from('test-url') };
-    channel.consume.mockImplementationOnce((queue, onMessage) => onMessage(msg));
-    scraper.scrapePropertyDetails.mockResolvedValue('test-details');
+  test('should handle property links', async () => {
+    // Prepare
+    const mockPropertyLinks = ['link1', 'link2'];
+  
+    // Create a mock instance of ImotBGScraper for each link in mockPropertyLinks
+    ImotBGScraper.mockImplementation(() => ({
+      scrapePropertyLinks: jest
+        .fn()
+        .mockImplementation((url) =>
+          Promise.resolve(mockPropertyLinks.includes(url) ? [url] : [])
+        ),
+    }));
+  
+    // Action
     await main();
-    expect(channel.consume).toHaveBeenCalledWith('propertyUrlsQueue', expect.any(Function), { noAck: false });
-    expect(scraper.scrapePropertyDetails).toHaveBeenCalledWith('test-url', scraper.detailsXPaths);
-    expect(FileManager.appendToFile).toHaveBeenCalledWith('propertyDetails.txt', 'test-details');
+  
+    // Validate
+    const consumeCallback = mockConsume.mock.calls[0][1];
+    for (const link of mockPropertyLinks) {
+      await consumeCallback({ content: { toString: () => link } });
+      expect(mockSendToQueue).toHaveBeenCalledWith(
+        config.rabbitmq.queue_property_listings,
+        link
+      );
+      mockSendToQueue.mockClear();
+    }
   });
-
-  it('should handle errors when connecting to AMQP', async () => {
-    amqp.connect.mockRejectedValueOnce(new Error('AMQP connection error'));
-    await main();
-    expect(console.error).toHaveBeenCalledWith('Error in main:', new Error('AMQP connection error'));
-  });
-
-  it('should handle errors when launching puppeteer', async () => {
-    puppeteer.launch.mockRejectedValueOnce(new Error('Puppeteer launch error'));
-    await main();
-    expect(console.error).toHaveBeenCalledWith('Error in main:', new Error('Puppeteer launch error'));
-  });
-
-  it('should handle errors when scraping property details', async () => {
-    const msg = { content: Buffer.from('test-url') };
-    channel.consume.mockImplementationOnce((queue, onMessage) => onMessage(msg));
-    scraper.scrapePropertyDetails.mockRejectedValueOnce(new Error('Scraping error'));
-    await main();
-    expect(channel.consume).toHaveBeenCalledWith('propertyUrlsQueue', expect.any(Function), { noAck: false });
-    expect(scraper.scrapePropertyDetails).toHaveBeenCalledWith('test-url', scraper.detailsXPaths);
-    expect(console.error).toHaveBeenCalledWith('Error in main:', new Error('Scraping error'));
-  });
-
+   
 });

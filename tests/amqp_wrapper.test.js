@@ -4,6 +4,7 @@ const mockCreateChannel = jest.fn();
 const mockAssertQueue = jest.fn();
 const mockSendToQueue = jest.fn();
 const mockConsume = jest.fn();
+jest.useFakeTimers()
 
 jest.mock('amqplib', () => ({
   connect: mockConnect,
@@ -14,6 +15,7 @@ const config = require('../src/config/config');
 
 describe('AMQPWrapper', () => {
   let amqp;
+  let exitSpy;
 
   beforeEach(() => {
     mockConnect.mockResolvedValue({
@@ -25,17 +27,28 @@ describe('AMQPWrapper', () => {
       consume: mockConsume,
     });
     amqp = new AMQPWrapper(config);
+    exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
+
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
   });
 
   test('connect should be called with correct config', async () => {
     await amqp.connect();
-    expect(mockConnect).toHaveBeenCalledWith(config.rabbitmqUrl);
+    expect(mockConnect).toHaveBeenCalledWith({
+      hostname: config.rabbitmq.host,
+      port: config.rabbitmq.port,
+      username: config.rabbitmq.user,
+      password: config.rabbitmq.password
+    });
   });
 
   test('publish should send message to correct queue', async () => {
     const queue = 'testQueue';
     const message = 'testMessage';
-    await amqp.publish(queue, message);
+    await amqp.sendToQueue(queue, message);
     expect(mockAssertQueue).toHaveBeenCalledWith(queue, { durable: true });
     expect(mockSendToQueue).toHaveBeenCalledWith(queue, Buffer.from(message));
   });
@@ -45,7 +58,7 @@ describe('AMQPWrapper', () => {
     const onMessage = jest.fn();
     await amqp.consume(queue, onMessage);
     expect(mockAssertQueue).toHaveBeenCalledWith(queue, { durable: true });
-    expect(mockConsume).toHaveBeenCalledWith(queue, onMessage, { noAck: false });
+    expect(mockConsume).toHaveBeenCalledWith(queue, onMessage);
   });
 
   // add more tests
@@ -57,22 +70,22 @@ describe('AMQPWrapper', () => {
   // test some negative cases
 
   test('connect should throw error if connection fails', async () => {
-    mockConnect.mockRejectedValue(new Error('Connection failed'));
-    await expect(amqp.connect()).rejects.toThrow('Connection failed');
+    mockConnect.mockRejectedValue(new Error('Connection is not established'));
+    await expect(amqp.connect()).rejects.toThrow('Connection is not established');
   }
     );
 
  test('publish should throw error if connection is not established', async () => {
+    mockConnect.mockRejectedValue(new Error('Connection is not established'));
 
-    await expect(amqp.publish('testQueue', 'testMessage')).rejects.toThrow('Connection is not established');
-  }
-    );
+    await expect(amqp.sendToQueue('testQueue', 'testMessage')).rejects.toThrow('Connection is not established');
+  });
 
-    test('consume should throw error if connection is not established', async () => {
+  test('consume should throw error if connection is not established', async () => {
+    mockConnect.mockRejectedValue(new Error('Connection is not established'));
 
     await expect(amqp.consume('testQueue', jest.fn())).rejects.toThrow('Connection is not established');
-    }
-    );
+  });
     
   
 });

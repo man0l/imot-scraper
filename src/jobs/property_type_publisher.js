@@ -17,7 +17,7 @@ async function main() {
         let amqp = new AMQPWrapper(config);
         await amqp.connect();
         for (const propertyType in propertyTypes) {
-            amqp.sendToQueue(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_TYPES, propertyTypes[propertyType]);
+            amqp.sendToQueue(config.rabbitmq.queue_property_types, propertyTypes[propertyType]);
             console.log(`Sent '${propertyTypes[propertyType]}'`);
         }
 
@@ -30,4 +30,5 @@ async function main() {
     }
 }
 
-main();
+exports.main = main;
+exports.propertyTypes = propertyTypes;

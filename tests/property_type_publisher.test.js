@@ -1,58 +1,81 @@
-// main.test.js
-
-jest.mock('../libs/amqp_wrapper');
-jest.mock('../config/config');
+const AMQPWrapper = require('../src/libs/amqp_wrapper');
+const config = require('../src/config/config');
+const { main, propertyTypes } = require('../src/jobs/property_type_publisher');
 jest.useFakeTimers(); // Using fake timers
 
-describe('main', () => {
-  let consoleErrorOriginal;
-  let consoleLogOriginal;
-  let processExitOriginal;
-  let amqp;
+jest.mock('../src/libs/amqp_wrapper', () => jest.fn());
+jest.mock('../src/libs/imotbg_scraper', () => jest.fn());
+jest.mock('../src/config/config', () => ({
+  rabbitmq: {
+    host: 'mockHost',
+    port: 'mockPort',
+    user: 'mockUser',
+    password: 'mockPassword',
+    queue_property_types: 'mockQueue',
+    queue_property_listings: 'mockQueue',
+  }
+}));
 
-  beforeAll(() => {
-    consoleErrorOriginal = console.error;
-    consoleLogOriginal = console.log;
-    processExitOriginal = process.exit;
-    console.error = jest.fn();
-    console.log = jest.fn();
-    process.exit = jest.fn();
-    amqp = new AMQPWrapper();
+const mockConnect = jest.fn();
+const mockConsume = jest.fn();
+const mockSendToQueue = jest.fn();
+const mockAck = jest.fn();
+const mockClose = jest.fn();
+AMQPWrapper.mockImplementation(() => ({
+  connect: mockConnect,
+  consume: mockConsume,
+  sendToQueue: mockSendToQueue,
+  close: mockClose,
+  channel: {
+    ack: mockAck,
+  }
+}));
+
+describe('main', () => {
+  let consoleErrorSpy;
+  let exitSpy;
+  beforeEach(() => {
+     // Create a spy for console.error
+     consoleErrorSpy = jest.spyOn(console, 'error');
+     consoleErrorSpy.mockImplementation(() => {});
+
+     // Reset the mock call count before each test
+     mockConnect.mockClear();
+     mockConsume.mockClear();
+     mockSendToQueue.mockClear();
+     mockAck.mockClear();
+     exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
   });
 
-  afterAll(() => {
-    console.error = consoleErrorOriginal;
-    console.log = consoleLogOriginal;
-    process.exit = processExitOriginal;
-    jest.restoreAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
+    // Restore console.error to its original form
+    consoleErrorSpy.mockRestore();
+    exitSpy.mockRestore();
   });
 
   it('should connect to AMQP and send property types to the queue', async () => {
-    const propertyTypesMock = {
-      'test-property-type': 'test-url',
-    };
-    const main = require('../src/jobs/property_type_publisher')(propertyTypesMock); // Assuming you export the main function and allow propertyTypes to be passed as an argument
-
     await main();
 
-    expect(amqp.connect).toHaveBeenCalled();
-    expect(amqp.sendToQueue).toHaveBeenCalledWith(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_TYPES, 'test-url');
-    expect(console.log).toHaveBeenCalledWith(`Sent 'test-url'`);
-    expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 500);
-
-    jest.runAllTimers(); // Running all timers
-
-    expect(amqp.close).toHaveBeenCalled();
+    expect(mockConnect).toHaveBeenCalledTimes(1);
+    Object.values(propertyTypes).forEach((url, index) => {
+      expect(mockSendToQueue).toHaveBeenNthCalledWith(index + 1, config.rabbitmq.queue_property_types, url);
+    });
+    
+    jest.runOnlyPendingTimers();
+    expect(mockClose).toHaveBeenCalledTimes(1);
     expect(process.exit).toHaveBeenCalledWith(0);
   });
 
   it('should handle errors when connecting to AMQP', async () => {
     const error = new Error('AMQP connection error');
-    amqp.connect.mockRejectedValueOnce(error);
-    const main = require('./main')({});
+    mockConnect.mockImplementationOnce(() => Promise.reject(error)); 
 
     await main();
 
+    expect(mockConnect).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith('Error in main:', error);
   });
+
 });
+

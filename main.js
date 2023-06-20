@@ -8,6 +8,7 @@ async function main() {
     
     try {
         let amqp = new AMQPWrapper(config);
+        console.log('connecting to amqp');
         await amqp.connect();
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
@@ -15,14 +16,14 @@ async function main() {
 
         console.log('Waiting for property URLs...');
 
-        amqp.consume(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_TYPES, async (msg) => {
+        amqp.consume(config.rabbitmq.queue_property_types, async (msg) => {
             if (msg !== null) {
                 const url = msg.content.toString();
                 const propertyLinks = await scraper.scrapePropertyLinks(url);
 
-                if (propertyLinks) {
+                if (propertyLinks && propertyLinks.length > 0) {
                     propertyLinks.forEach(async (propertyLink) => {
-                        await amqp.sendToQueue(config.rabbitmq.RABBITMQ_QUEUE_PROPERTY_LISTINGS, propertyLink);
+                        await amqp.sendToQueue(config.rabbitmq.queue_property_listings, propertyLink);
                     });
                 }
 
