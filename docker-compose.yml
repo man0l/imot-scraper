@@ -7,17 +7,36 @@ services:
       - "15672:15672"
   web_scraper_publisher:
     build: .
-    command: node src/jobs/property_type_publisher.js
+    command: node src/jobs/worker.js property_type_publisher
     volumes:
       - .:/app
     depends_on:
       - rabbitmq
-    restart: always
+    #restart: always
   web_scraper_consumer:
+    build: .
+    command: node src/jobs/worker.js property_link_consumer
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+      - mysql
+    restart: always
+  web_scraper_property_types:
     build: .
     command: node main.js
     volumes:
       - .:/app
     depends_on:
       - rabbitmq
+    restart: always
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: web_scraper
+    volumes:
+      - ./mysql:/var/lib/mysql
     restart: always
