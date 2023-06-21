@@ -57,3 +57,4 @@ class ScraperService {
 }
 
 exports.main = new ScraperService(config, new AMQPWrapper(config), new Browser(), new ImotBGScraper(), PropertyRepository);
+exports.start = exports.main.start.bind(exports.main);
