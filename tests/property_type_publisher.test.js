@@ -1,6 +1,6 @@
 const AMQPWrapper = require('../src/libs/amqp_wrapper');
 const config = require('../src/config/config');
-const { main, propertyTypes } = require('../src/jobs/property_type_publisher');
+const { start, propertyTypes } = require('../src/jobs/property_type_publisher');
 jest.useFakeTimers(); // Using fake timers
 
 jest.mock('../src/libs/amqp_wrapper', () => jest.fn());
@@ -55,7 +55,7 @@ describe('main', () => {
   });
 
   it('should connect to AMQP and send property types to the queue', async () => {
-    await main();
+    await start();
 
     expect(mockConnect).toHaveBeenCalledTimes(1);
     Object.values(propertyTypes).forEach((url, index) => {
@@ -71,7 +71,7 @@ describe('main', () => {
     const error = new Error('AMQP connection error');
     mockConnect.mockImplementationOnce(() => Promise.reject(error)); 
 
-    await main();
+    await start();
 
     expect(mockConnect).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith('Error in main:', error);

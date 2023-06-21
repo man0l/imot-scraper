@@ -12,7 +12,7 @@ const propertyTypes = {
   'етаж от къща': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=9&f4=&f5=',
 };
 
-async function main() {
+async function start() {
     try {
         let amqp = new AMQPWrapper(config);
         await amqp.connect();
@@ -30,5 +30,5 @@ async function main() {
     }
 }
 
-exports.main = main;
+exports.start = start;
 exports.propertyTypes = propertyTypes;

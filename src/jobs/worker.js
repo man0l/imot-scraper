@@ -9,4 +9,4 @@ if (!fs.existsSync(workerFilePath)) {
 }
 
 const worker = require(workerFilePath);
-worker.main();
+worker.start();
