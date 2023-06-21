@@ -13,6 +13,14 @@ class Browser {
     });
   }
 
+  getBrowser() {
+    if (!this.browser) {
+      throw new Error('Browser is not launched');
+    }
+
+    return this.browser;
+  }
+
   async getPage() {
     if (!this.browser) {
       throw new Error('Browser is not launched');

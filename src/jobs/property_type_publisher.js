@@ -1,5 +1,9 @@
 const AMQPWrapper = require('../libs/amqp_wrapper');
 const config = require('../config/config');
+const BrowserClass = require('../libs/browser');
+const Browser = new BrowserClass();
+const ImotBGScraper = require('../libs/imotbg_scraper');
+
 const propertyTypes = {
   '1-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=1&f4=&f5=',
   '2-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=2&f4=&f5=',
@@ -14,21 +18,32 @@ const propertyTypes = {
 
 async function start() {
     try {
-        let amqp = new AMQPWrapper(config);
-        await amqp.connect();
-        for (const propertyType in propertyTypes) {
-            amqp.sendToQueue(config.rabbitmq.queue_property_types, propertyTypes[propertyType]);
-            console.log(`Sent '${propertyTypes[propertyType]}'`);
-        }
-
-        setTimeout(() => {
-            amqp.close();
-            process.exit(0);
-        }, 500);
+      let amqp = new AMQPWrapper(config);
+      await amqp.connect();
+      const browser = await Browser.getBrowser();
+      const page = await Browser.getPage();
+      const scraper = new ImotBGScraper(browser, page);
+  
+      const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
+        const propertyLinks = await scraper.scrapePropertyLinks(url);
+  
+        const sendToQueuePromises = propertyLinks.map(link => {
+          return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
+        });
+  
+        await Promise.all(sendToQueuePromises);
+      });
+  
+      await Promise.all(scrapeAndSendPromises);
+  
+      setTimeout(() => {
+        amqp.close();
+        process.exit(0);
+      }, 500);
     } catch (error) {
-        console.error('Error in main:', error);
+      console.error('Error in main:', error);
     }
-}
-
+  }
+  
 exports.start = start;
 exports.propertyTypes = propertyTypes;

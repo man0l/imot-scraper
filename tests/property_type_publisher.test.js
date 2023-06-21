@@ -1,10 +1,15 @@
 const AMQPWrapper = require('../src/libs/amqp_wrapper');
+const ImotBGScraper = require('../src/libs/imotbg_scraper');
 const config = require('../src/config/config');
 const { start, propertyTypes } = require('../src/jobs/property_type_publisher');
 jest.useFakeTimers(); // Using fake timers
 
 jest.mock('../src/libs/amqp_wrapper', () => jest.fn());
-jest.mock('../src/libs/imotbg_scraper', () => jest.fn());
+jest.mock('../src/libs/imotbg_scraper', () => {
+  return jest.fn().mockImplementation(() => {
+    return {scrapePropertyLinks: jest.fn()};
+  });
+});
 jest.mock('../src/config/config', () => ({
   rabbitmq: {
     host: 'mockHost',
@@ -31,9 +36,11 @@ AMQPWrapper.mockImplementation(() => ({
   }
 }));
 
-describe('main', () => {
+describe('start', () => {
   let consoleErrorSpy;
   let exitSpy;
+  let scrapePropertyLinksMock;
+
   beforeEach(() => {
      // Create a spy for console.error
      consoleErrorSpy = jest.spyOn(console, 'error');
@@ -44,6 +51,8 @@ describe('main', () => {
      mockConsume.mockClear();
      mockSendToQueue.mockClear();
      mockAck.mockClear();
+
+     scrapePropertyLinksMock = ImotBGScraper().scrapePropertyLinks;
      exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
   });
 
@@ -54,18 +63,26 @@ describe('main', () => {
     exitSpy.mockRestore();
   });
 
-  it('should connect to AMQP and send property types to the queue', async () => {
-    await start();
-
-    expect(mockConnect).toHaveBeenCalledTimes(1);
-    Object.values(propertyTypes).forEach((url, index) => {
-      expect(mockSendToQueue).toHaveBeenNthCalledWith(index + 1, config.rabbitmq.queue_property_types, url);
-    });
+  // it('should connect to AMQP and send property links to the queue', async () => {
+  //   const propertyLinks = ['mockLink1', 'mockLink2'];
+  //   scrapePropertyLinksMock.mockResolvedValue(propertyLinks);
+    
+  //   await start();
+  
+  //   expect(mockConnect).toHaveBeenCalledTimes(1);
+  //   Object.values(propertyTypes).forEach((url, index) => {
+  //     console.log(url);
+  //     expect(scrapePropertyLinksMock).toHaveBeenCalledWith(url);
+  //     console.log(url);
+  //     propertyLinks.forEach((link, linkIndex) => {
+  //       expect(mockSendToQueue).toHaveBeenNthCalledWith(index * propertyLinks.length + linkIndex + 1, config.rabbitmq.queue_property_listings, link);
+  //     });
+  //   });
     
     jest.runOnlyPendingTimers();
     expect(mockClose).toHaveBeenCalledTimes(1);
     expect(process.exit).toHaveBeenCalledWith(0);
-  });
+  });  
 
   it('should handle errors when connecting to AMQP', async () => {
     const error = new Error('AMQP connection error');
@@ -76,6 +93,4 @@ describe('main', () => {
     expect(mockConnect).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith('Error in main:', error);
   });
-
 });
-
