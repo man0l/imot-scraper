@@ -6,6 +6,8 @@ const ImotBGScraper = require(path.join(__dirname, '..', 'libs', 'imotbg_scraper
 const config = require(path.join(__dirname, '..', 'config', 'config'));
 const PropertyRepository = require(path.join(__dirname, '..', 'libs', 'PropertyRepository'));
 const md5 = require('md5');
+const Browser = require(path.join(__dirname, '..', 'libs', 'browser'));
+
 
 async function main() {
     
@@ -13,8 +15,10 @@ async function main() {
         let amqp = new AMQPWrapper(config);
         console.log('connecting to amqp');
         await amqp.connect();
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+        const browser = new Browser();
+        await browser.launch();
+        const page = await browser.getPage();
+    
         const scraper = new ImotBGScraper(browser, page);
 
         console.log('Waiting for property URLs...');

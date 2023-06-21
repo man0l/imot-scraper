@@ -1,18 +1,19 @@
 const puppeteer = require('puppeteer');
-const AMQPWrapper = require('./src/libs/amqp_wrapper');
+
 const ImotBGScraper = require('./src/libs/imotbg_scraper');
-const FileManager = require('./src/libs/file_manager');
+
 const config = require('./src/config/config');
 
-async function main() {
+async function main(amqp, scraper) {
     
     try {
-        let amqp = new AMQPWrapper(config);
+
         console.log('connecting to amqp');
         await amqp.connect();
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        const scraper = new ImotBGScraper(browser, page);
+        const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/google-chrome',
+            args: ['--no-sandbox', '--disable-dev-shm-usage'],
+          });
 
         console.log('Waiting for property URLs...');
 
