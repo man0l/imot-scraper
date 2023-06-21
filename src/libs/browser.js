@@ -9,8 +9,18 @@ class Browser {
   async launch() {
     this.browser = await puppeteer.launch({
       executablePath: '/usr/bin/google-chrome',
-      args: ['--no-sandbox', '--disable-dev-shm-usage'],
-    });
+      args: [
+        '--no-sandbox', 
+        '--disable-dev-shm-usage',
+        '--disable-setuid-sandbox',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+      ],
+      ignoreHTTPSErrors: true,
+      dumpio: false,
+      headless: true,
+      defaultViewport: null,
+    });    
   }
 
   getBrowser() {

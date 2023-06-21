@@ -20,6 +20,7 @@ async function start() {
     try {
       let amqp = new AMQPWrapper(config);
       await amqp.connect();
+      await Browser.launch();
       const browser = await Browser.getBrowser();
       const page = await Browser.getPage();
       const scraper = new ImotBGScraper(browser, page);
