@@ -21,13 +21,15 @@ async function start() {
       let amqp = new AMQPWrapper(config);
       await amqp.connect();
       await Browser.launch();
-      const browser = await Browser.getBrowser();
+      const browser = Browser.getBrowser();
       const page = await Browser.getPage();
       const scraper = new ImotBGScraper(browser, page);
   
       const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
         const propertyLinks = await scraper.scrapePropertyLinks(url);
-  
+        if (propertyLinks === null) {
+          return;
+        }
         const sendToQueuePromises = propertyLinks.map(link => {
           return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
         });
@@ -38,7 +40,7 @@ async function start() {
       await Promise.all(scrapeAndSendPromises);
   
       setTimeout(() => {
-        amqp.close();
+        //amqp.close();
         process.exit(0);
       }, 500);
     } catch (error) {

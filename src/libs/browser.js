@@ -1,5 +1,7 @@
 // browser.js
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
+import config from '../config/config';
 
 class Browser {
   constructor() {
@@ -8,7 +10,7 @@ class Browser {
 
   async launch() {
     this.browser = await puppeteer.launch({
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: config.puppeteer.executablePath,
       args: [
         '--no-sandbox', 
         '--disable-dev-shm-usage',
@@ -37,6 +39,14 @@ class Browser {
     }
 
     return await this.browser.newPage();
+  }
+
+  close() {
+    if (!this.browser) {
+      throw new Error('Browser is not launched');
+    }
+
+    return this.browser.close();
   }
 }
 

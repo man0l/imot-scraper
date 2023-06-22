@@ -13,6 +13,8 @@ services:
     depends_on:
       - rabbitmq
     restart: always
+    cap_add:
+      - SYS_ADMIN
   web_scraper_consumer:
     build: .
     command: node src/jobs/worker.js property_link_consumer
@@ -22,14 +24,8 @@ services:
       - rabbitmq
       - mysql
     restart: always
-  web_scraper_property_types:
-    build: .
-    command: node main.js
-    volumes:
-      - .:/app
-    depends_on:
-      - rabbitmq
-    restart: always
+    cap_add:
+      - SYS_ADMIN
   mysql:
     image: mysql:8.0
     ports:

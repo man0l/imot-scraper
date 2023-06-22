@@ -14,5 +14,8 @@ module.exports = {
     port: process.env.DATABASE_PORT,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD
+  },
+  puppeteer: {
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
   }
 };

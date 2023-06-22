@@ -11,7 +11,7 @@ class ImotBGScraper extends Scraper {
             area: '//div[contains(text(), "Площ")]/strong',
             floor: '//div[contains(text(), "Етаж")]/strong',
             constructionType: '//div[contains(text(), "Строителство")]/strong',
-            propertyFeatures: '//table div[style*="margin-bottom"] div'
+            //propertyFeatures: '//table div[style*="margin-bottom"] div'
         };
     }
 }
