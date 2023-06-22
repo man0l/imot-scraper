@@ -7,10 +7,9 @@ const config = require(path.join(__dirname, '..', 'config', 'config'));
 const md5 = require('md5');
 
 class ScraperService {
-    constructor(config, amqp, browser, scraper, propertyRepository) {
+    constructor(config, amqp, scraper, propertyRepository) {
         this.config = config;
         this.amqp = amqp;
-        this.browser = browser;
         this.scraper = scraper;
         this.propertyRepository = propertyRepository;
     }
@@ -18,11 +17,6 @@ class ScraperService {
     async connectToAmqp() {
         console.log('connecting to amqp');
         await this.amqp.connect();
-    }
-
-    async launchBrowser() {
-        await this.browser.launch();
-        this.page = await this.browser.getPage();
     }
 
     async handleMessage(msg) {
@@ -48,7 +42,6 @@ class ScraperService {
     async start() {
         try {
             await this.connectToAmqp();
-            await this.launchBrowser();
             await this.consumeMessages();
         } catch (error) {
             console.error('Error in main:', error);
@@ -56,5 +49,6 @@ class ScraperService {
     }
 }
 
-exports.main = new ScraperService(config, new AMQPWrapper(config), new Browser(), new ImotBGScraper(), PropertyRepository);
-exports.start = exports.main.start.bind(exports.main);
+//exports.main = new ScraperService(config, new AMQPWrapper(config), new ImotBGScraper(await (new Browser()).launch()), PropertyRepository);
+//exports.start = exports.main.start.bind(exports.main);
+exports.ScraperService = ScraperService;

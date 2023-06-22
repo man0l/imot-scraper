@@ -1,7 +1,6 @@
 // browser.js
-//const puppeteer = require('puppeteer');
-import puppeteer from 'puppeteer';
-import config from '../config/config';
+const puppeteer = require('puppeteer');
+const config = require('../config/config');
 
 class Browser {
   constructor() {

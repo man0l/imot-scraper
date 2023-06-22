@@ -1,10 +1,21 @@
 class Scraper {
-    constructor(browser, page) {
+    constructor(browser) {
         this.browser = browser;
-        this.page = page;
+        this.page = null;
+        console.log('browser initialized');
+    }
+
+    async getPage() {
+        if (!this.page) {
+            this.page = await this.browser.getPage();
+        }
+
+        return this.page;
     }
 
     async scrapePropertyLinks(url) {
+        this.page = this.page || await this.getPage();
+
         try {
             await this.page.goto(url);
             return await this.page.evaluate(() => {
@@ -20,6 +31,8 @@ class Scraper {
     }
 
     async scrapePropertyDetails(url, detailsXPaths) {
+        this.page = this.page || await this.getPage();
+
         try {
             await this.page.goto(url);
             return await this.page.evaluate((xpaths) => {

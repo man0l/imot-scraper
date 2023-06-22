@@ -22,8 +22,7 @@ async function start() {
       await amqp.connect();
       await Browser.launch();
       const browser = Browser.getBrowser();
-      const page = await Browser.getPage();
-      const scraper = new ImotBGScraper(browser, page);
+      const scraper = new ImotBGScraper(browser);
   
       const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
         const propertyLinks = await scraper.scrapePropertyLinks(url);
@@ -40,7 +39,7 @@ async function start() {
       await Promise.all(scrapeAndSendPromises);
   
       setTimeout(() => {
-        //amqp.close();
+        amqp.close();
         process.exit(0);
       }, 500);
     } catch (error) {
@@ -48,5 +47,5 @@ async function start() {
     }
   }
   
-exports.start = start;
+exports.default = start;
 exports.propertyTypes = propertyTypes;
