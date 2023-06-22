@@ -1,8 +1,8 @@
 const Scraper = require('./scraper');
 
 class ImotBGScraper extends Scraper {
-    constructor(browser, page) {
-        super(browser, page);
+    constructor(browser) {
+        super(browser);
         this.detailsXPaths = {
             propertyType: '//div[@class="title"]',
             location: '//div[@class="location"]',

@@ -1,5 +1,12 @@
+const Browser = require('./browser');
+
 class Scraper {
     constructor(browser) {
+        // expects an instance of a Browser
+        if (!(browser instanceof Browser)) {
+            throw new Error('Invalid browser instance. It shoulde be an instance of Browser');
+        }
+
         this.browser = browser;
         this.page = null;
         console.log('browser initialized');

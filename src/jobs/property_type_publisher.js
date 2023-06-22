@@ -1,7 +1,6 @@
 const AMQPWrapper = require('../libs/amqp_wrapper');
 const config = require('../config/config');
 const BrowserClass = require('../libs/browser');
-const Browser = new BrowserClass();
 const ImotBGScraper = require('../libs/imotbg_scraper');
 
 const propertyTypes = {
@@ -20,9 +19,10 @@ async function start() {
     try {
       let amqp = new AMQPWrapper(config);
       await amqp.connect();
-      await Browser.launch();
-      const browser = Browser.getBrowser();
-      const scraper = new ImotBGScraper(browser);
+      
+      let browserInstance = new BrowserClass();
+      await browserInstance.launch();
+      const scraper = new ImotBGScraper(browserInstance);
   
       const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
         const propertyLinks = await scraper.scrapePropertyLinks(url);
@@ -47,5 +47,5 @@ async function start() {
     }
   }
   
-exports.default = start;
+exports.start = start;
 exports.propertyTypes = propertyTypes;

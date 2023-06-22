@@ -1,5 +1,5 @@
-const producer = require('./property_type_publisher');
+const {start} = require('./property_type_publisher');
 
 (async () => {
-    await producer.start();
+    await start();
 })();

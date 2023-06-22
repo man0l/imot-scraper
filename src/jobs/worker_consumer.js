@@ -9,8 +9,8 @@ const PropertyRepository = require('../libs/PropertyRepository');
 const config = require('../config/config');
 
 (async () => {
-    const browser = await (new Browser()).launch();
-    console.log('create consumer');
-    const consumer = new ScraperService(config, new AMQPWrapper(config), new ImotBGScraper(browser), PropertyRepository);
+    let browserInstance = new Browser();
+    await browserInstance.launch();    
+    const consumer = new ScraperService(config, new AMQPWrapper(config), new ImotBGScraper(browserInstance), PropertyRepository);
     await consumer.start();
 })();
