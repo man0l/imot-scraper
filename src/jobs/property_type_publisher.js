@@ -25,15 +25,17 @@ async function start() {
       const scraper = new ImotBGScraper(browserInstance);
   
       const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
-        const propertyLinks = await scraper.scrapePropertyLinks(url);
-        if (propertyLinks === null) {
-          return;
-        }
-        const sendToQueuePromises = propertyLinks.map(link => {
-          return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
-        });
-  
-        await Promise.all(sendToQueuePromises);
+        
+          const propertyLinks = await scraper.scrapePropertyLinks(url);
+          if (propertyLinks === null) {
+            return;
+          }
+          const sendToQueuePromises = propertyLinks.map(link => {
+            console.log('Sending link to queue:', link );
+            return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
+          });
+    
+          await Promise.all(sendToQueuePromises);
       });
   
       await Promise.all(scrapeAndSendPromises);
