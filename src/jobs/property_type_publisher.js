@@ -2,6 +2,7 @@ const AMQPWrapper = require('../libs/amqp_wrapper');
 const config = require('../config/config');
 const BrowserClass = require('../libs/browser');
 const ImotBGScraper = require('../libs/imotbg_scraper');
+const fs = require('fs');
 
 const propertyTypes = {
   '1-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=1&f4=&f5=',
@@ -32,6 +33,7 @@ async function start() {
           }
           const sendToQueuePromises = propertyLinks.map(link => {
             console.log('Sending link to queue:', link );
+            fs.appendFileSync('links.txt', link + '\n');
             return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
           });
     
