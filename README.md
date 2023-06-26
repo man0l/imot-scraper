@@ -25,6 +25,12 @@ cd imot-scraper
 docker-compose build
 ```
 
+3. Run the migrations:
+
+```bash
+docker-compose run web_scraper_consumer npx sequelize-cli db:migrate --migrations-path ./src/migrations/ --models-path ./src/models/ --config ./src/config/db.json
+```
+
 ### Usage
 
 1. To start the RabbitMQ server, publisher, and consumer:
@@ -36,6 +42,10 @@ docker-compose up
 The `property_type_publisher.js` script will automatically publish property types URLs to RabbitMQ, and the `main.js` script will consume the URLs and scrape property details.
 
 You can view the logs for each service in the Docker Compose output.
+
+## Work with RabbitMQ Management
+You can access the RabbitMQ Management interface at http://host.docker.internal:15672. The default username and password are `guest`.
+Also, you could connect to the rabbitmq server through the same host and port host.docker.internal:5672
 
 ## Built With
 

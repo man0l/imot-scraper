@@ -10,7 +10,7 @@ services:
     build: .
     command: node src/jobs/worker_publisher.js
     volumes:
-      - .:/home/pptruser/app
+      - .:/home/pptruser/app:cached
     depends_on:
       - rabbitmq
     restart: always
@@ -20,9 +20,10 @@ services:
       - .env
   web_scraper_consumer:
     build: .
-    command: node src/jobs/worker_consumer.js
+    #command: npx sequelize-cli db:migrate --migrations-path ./src/migrations/ --models-path ./src/models/ --config ./src/config/db.json && node src/jobs/worker_consumer.js    
+    command: node src/jobs/worker_consumer.js    
     volumes:
-      - .:/home/pptruser/app
+      - .:/home/pptruser/app:cached
     depends_on:
       - rabbitmq
       - mysql
@@ -31,6 +32,12 @@ services:
       - SYS_ADMIN
     env_file:
       - .env
+  # web_scraper_file:
+  #   build: .
+  #   command: node src/jobs/scrapertest.js    
+  #   volumes:
+  #     - .:/home/pptruser/app
+  #   restart: always
   mysql:
     image: mysql:8.0
     ports:
@@ -38,6 +45,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: web_scraper
+    command: ['mysqld', '--lower_case_table_names=1', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci',]
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql:/var/lib/mysql:delegated
     restart: always
