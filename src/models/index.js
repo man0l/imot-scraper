@@ -1,3 +1,4 @@
+const path = require('path');
 const { Sequelize } = require('sequelize');
 const { database } = require('../config/config');
 
@@ -11,9 +12,9 @@ const modelDefiners = [
   require('./PropertyType'), // import the PropertyType model
 ];
 
+let Property = require('./Property')(sequelize, Sequelize.DataTypes);
+let PropertyType = require('./PropertyType')(sequelize, Sequelize.DataTypes);
 
-for (const modelDefiner of modelDefiners) {
-  modelDefiner(sequelize, Sequelize.DataTypes);
-}
-
-module.exports = sequelize;
+module.exports.Property = Property;
+module.exports.PropertyType = PropertyType;
+module.exports.sequelize = sequelize;

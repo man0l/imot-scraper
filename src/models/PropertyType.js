@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true
       }
-    });
+    }, {tableName: 'propertytypes'}
+    );
   
     PropertyType.associate = (models) => {
       PropertyType.hasMany(models.Property, {
