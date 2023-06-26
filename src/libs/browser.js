@@ -9,24 +9,32 @@ const fs = require('fs');
 puppeteer.use(pluginStealth());
 
 class Browser {
-  constructor() {
+  constructor(workerName = null) {
     this.browser = null;
     this.page = null;
     this.cookiesPath = path.join(__dirname,"../..", config.puppeteer.userDataDir, "/cookies.json");
+    this.workerName = workerName;
   }
 
   async launch() {
-    this.browser = await puppeteer.launch({
-      executablePath: executablePath(),
-      args: [
+    let args = [
         '--no-sandbox', 
         '--disable-dev-shm-usage',
         '--disable-setuid-sandbox',
         '--disable-web-security',
-        '--disable-features=IsolateOrigins,site-per-process',
-        '--user-data-dir=' + path.join(__dirname, "../..", config.puppeteer.userDataDir),
+        '--disable-features=IsolateOrigins,site-per-process'
+      ];
+
+      if(this.workerName) {
+        args.push([
+          '--user-data-dir=' + path.join(__dirname, "../..", config.puppeteer.userDataDir, '/', this.workerName),
         '--profile-directory=' + config.puppeteer.profileName,
-      ],
+        ]);
+      }
+
+    this.browser = await puppeteer.launch({
+      executablePath: executablePath(),
+      args: args,
       ignoreHTTPSErrors: true,
       dumpio: false,
       headless: 'new',

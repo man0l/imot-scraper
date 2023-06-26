@@ -13,6 +13,7 @@ class AMQPWrapper {
       password: this.config.rabbitmq.password
     });
     this.channel = await this.connection.createChannel();
+    this.channel.prefetch(5);
   }
 
   async sendToQueue(queue, message) {
