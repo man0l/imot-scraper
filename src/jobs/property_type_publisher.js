@@ -5,51 +5,50 @@ const ImotBGScraper = require('../libs/imotbg_scraper');
 const fs = require('fs');
 
 const propertyTypes = {
-  '1-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=1&f4=&f5=',
-  '2-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=2&f4=&f5=',
-  '3-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=3&f4=&f5=',
-  '4-стаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=4&f4=&f5=',
-  'многостаен': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=5&f4=&f5=',
-  'мезонет': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=6&f4=&f5=',
-  'офис': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=7&f4=&f5=',
-  'ателие, таван': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=8&f4=&f5=',
-  'етаж от къща': 'https://www.imot.bg/pcgi/imot.cgi?act=11&f1=1&f2=1&f3=9&f4=&f5=',
+  '1-стаен': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=1&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  '2-стаен': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=2&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  '3-стаен': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=3&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  '4-стаен': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=4&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'многостаен': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=5&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'мезонет': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=6&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'офис': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=7&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'ателие, таван': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=8&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'етаж от къща': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=9&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'къща': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=10&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'вила': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=11&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'магазин': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=12&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'склад': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=14&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5=',
+  'гараж': 'https://imoti-sofia.imot.bg/pcgi/imot.cgi?act=11&f1=4&f2=1&f3=15&f4=%E3%F0%E0%E4%20%D1%EE%F4%E8%FF&f5='
 };
 
-async function start() {
-    try {
-      let amqp = new AMQPWrapper(config);
-      await amqp.connect();
-      
-      let browserInstance = new BrowserClass();
-      await browserInstance.launch();
-      const scraper = new ImotBGScraper(browserInstance);
-  
-      const scrapeAndSendPromises = Object.values(propertyTypes).map(async url => {
-        
-          const propertyLinks = await scraper.scrapePropertyLinks(url);
-          if (propertyLinks === null) {
-            return;
-          }
-          const sendToQueuePromises = propertyLinks.map(link => {
-            console.log('Sending link to queue:', link );
-            fs.appendFileSync('links.txt', link + '\n');
-            return amqp.sendToQueue(config.rabbitmq.queue_property_listings, link);
-          });
-    
-          await Promise.all(sendToQueuePromises);
-      });
-  
-      await Promise.all(scrapeAndSendPromises);
-  
-      setTimeout(() => {
-        amqp.close();
-        process.exit(0);
-      }, 500);
-    } catch (error) {
-      console.error('Error in main:', error);
+let types = [];
+
+for (let name in propertyTypes) {
+  types.push({ name: name, link: propertyTypes[name] });
+}
+
+async function start (amqp, scraper) {
+try {
+  for(i in types) {
+    let propertyLinks = await scraper.scrapePropertyLinks(types[i].link);
+    if (propertyLinks === null || propertyLinks.length === 0) {
+      return;
     }
+    
+    propertyLinks = [...new Set(propertyLinks)]; // deduplication
+
+    propertyLinks.forEach(async link => {
+      let msg = JSON.stringify({propType: types[i].name, link: link});
+      await amqp.sendToQueue(config.rabbitmq.queue_property_listings, msg);
+      console.log(msg + ' sent to queue');
+    });   
+    
   }
-  
+} catch(e) {
+  console.log("Error in start function: " + e.message);
+}
+
+}
+ 
 exports.start = start;
 exports.propertyTypes = propertyTypes;

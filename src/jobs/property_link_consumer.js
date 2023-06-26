@@ -5,6 +5,7 @@ const ImotBGScraper = require(path.join(__dirname, '..', 'libs', 'imotbg_scraper
 const PropertyRepository = require(path.join(__dirname, '..', 'libs', 'PropertyRepository'));
 const config = require(path.join(__dirname, '..', 'config', 'config'));
 const md5 = require('md5');
+const {propertyTypes} = require('./property_type_publisher');
 
 class ScraperService {
     constructor(config, amqp, scraper, propertyRepository) {
@@ -20,23 +21,34 @@ class ScraperService {
     }
 
     async handleMessage(msg) {
-        if (msg !== null) {
-            const url = msg.content.toString();
-            const propertyDetails = await this.scraper.scrapePropertyDetails(url, this.scraper.detailsXPaths);
+        if (!msg) {
+            return;
+        }
 
-            if (propertyDetails && propertyDetails.length > 0) {
-                propertyDetails.url = url;
-                propertyDetails.urlKey = md5(url);
-                await this.propertyRepository.createProperty(propertyDetails);
+        try {
+            const jsonMsg = JSON.parse(msg.content.toString());        
+            console.log(jsonMsg.link);
+            const propertyDetails = await this.scraper.scrapePropertyDetails(jsonMsg.link, this.scraper.detailsXPaths);
+
+            if (propertyDetails && Object.values(propertyDetails).length > 0) {
+                propertyDetails.url = jsonMsg.link;
+                propertyDetails.urlKey = md5(jsonMsg.link);
+                console.log(propertyDetails);
+                await this.propertyRepository.createProperty(propertyDetails, jsonMsg.propType);
             }
 
             this.amqp.channel.ack(msg);
+        } catch (error) {
+            console.error('Error parsing message:', error);
+            this.amqp.channel.ack(msg);
+            return;
         }
     }
+    
 
     async consumeMessages() {
         console.log('Waiting for property URLs...');
-        this.amqp.consume(this.config.rabbitmq.queue_property_listings, this.handleMessage.bind(this), { noAck: false });
+        this.amqp.consume(this.config.rabbitmq.queue_property_listings, await this.handleMessage.bind(this), { noAck: false });
     }
 
     async start() {

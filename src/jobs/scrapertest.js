@@ -4,7 +4,9 @@ const ImotBGScraper = require(path.join(__dirname, '..', 'libs', 'imotbg_scraper
 const fs = require('fs');
 
 let link = 'https://www.imot.bg/pcgi/imot.cgi?act=5&adv=1i164699138153598';
-let links = fs.readFileSync('../../links.txt', 'utf8').split('\n');
+let linksPath = path.join(__dirname, '..', '..', 'links.txt');
+let links = fs.readFileSync(linksPath, 'utf8').split('\n');
+links = [...new Set(links)];
 
 (async () => {
     const browserInstance = new Browser();
@@ -19,12 +21,9 @@ let links = fs.readFileSync('../../links.txt', 'utf8').split('\n');
     let details = [];
     for (let i = 0; i < links.length; i++) {
         let propertyDetails = await scraper.scrapePropertyDetails(links[i].trim(), scraper.detailsXPaths);
-        details.push(propertyDetails);
+         console.log(await propertyDetails);
     }
 
 
-    Promise.all(details).then(values => {
-        console.log(values);
-    });
-    //browserInstance.close();
+    // browserInstance.close(); 
 })();
