@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       constructionType: DataTypes.STRING,
       propertyFeatures: DataTypes.STRING,
       description: DataTypes.STRING, // New field for the description
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
       url: DataTypes.STRING,
       urlKey: DataTypes.STRING,
       propertyTypeId: DataTypes.INTEGER, // New field for the foreign key

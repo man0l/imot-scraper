@@ -1,0 +1,22 @@
+version: '3'
+services:
+  notebook:
+    image: tverous/pytorch-notebook:latest
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebook:/app
+    restart: always
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: web_scraper
+    command: ['mysqld', '--lower_case_table_names=1', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci',]
+    volumes:
+      - ./mysql:/var/lib/mysql:delegated
+    restart: always
