@@ -36,6 +36,10 @@ jobs:
         context: .
         push: true
         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+        # Add this if your Dockerfile isn't at the root or isn't named "Dockerfile"
+        # dockerfile: path/to/your/Dockerfile
+        env:
+          DOCKER_BUILDKIT: 1
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
